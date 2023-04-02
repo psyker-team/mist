@@ -47,3 +47,16 @@ Use the following command to boost webui. See [documents](https:) for more infor
 ```
 python mist-webui.py
 ```
+
+
+### Crop-Resize
+
+We use the following scripts to crop and resize the misted images to test the effects of mist under post-processing. 
+```
+python utils/postprocess.py
+```
+
+
+### Validation
+
+Refer to the [documents](https:) to validate the effects of mist.
