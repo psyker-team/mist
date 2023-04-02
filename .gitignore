@@ -3,7 +3,7 @@ src/
 openai/
 test/vangogh_*
 test/man_*
-test/man_*.png
+misted_*.png
 *.bin
 *.ckpt
 *.ipynb_checkpoints*
