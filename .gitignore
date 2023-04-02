@@ -2,6 +2,7 @@ hub/
 src/
 openai/
 test/vangogh_*
+test/man_*
 *.bin
 *.ckpt
 *.ipynb_checkpoints*

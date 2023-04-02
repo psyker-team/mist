@@ -57,6 +57,6 @@ python utils/postprocess.py
 ```
 
 
-### Validation
+## Validation
 
 Refer to the [documents](https:) to validate the effects of mist.
