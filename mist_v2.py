@@ -20,6 +20,7 @@ from advertorch.attacks import LinfPGDAttack
 ssl._create_default_https_context = ssl._create_unverified_context
 os.environ['TORCH_HOME'] = os.getcwd()
 os.environ['HF_HOME'] = os.path.join(os.getcwd(), 'hub/')
+device = 'cuda' if torch.cuda.is_available() else 'cpu'
 
 
 def load_image_from_path(image_path: str, input_size: int) -> PIL.Image.Image:
@@ -70,7 +71,7 @@ def load_model_from_config(config, ckpt, verbose: bool = False):
         print("unexpected keys:")
         print(u)
 
-    model.cuda()
+    model.to(device)
     model.eval()
     return model
 
@@ -119,7 +120,7 @@ class target_model(nn.Module):
         :return: encoded info of x, semantic loss
         """
 
-        z = self.model.get_first_stage_encoding(self.model.encode_first_stage(x)).cuda()
+        z = self.model.get_first_stage_encoding(self.model.encode_first_stage(x)).to(device)
         c = self.model.get_learned_conditioning(self.condition)
         loss = self.model(z, c)[0]
         return z, loss
@@ -175,7 +176,7 @@ def init(epsilon: int = 16, steps: int = 100, alpha: int = 1,
     config = OmegaConf.load(config_path)
 
     ckpt_path = os.path.join(os.getcwd(), ckpt)
-    model = load_model_from_config(config, ckpt_path).cuda()
+    model = load_model_from_config(config, ckpt_path).to(device)
 
     fn = identity_loss()
 
@@ -226,14 +227,14 @@ def infer(img: PIL.Image.Image, config, tar_img: PIL.Image.Image = None) -> np.n
         tar_img = np.array(tar_img).astype(np.float32) / 127.5 - 1.0
         tar_img = tar_img[:, :, :3]
     trans = transforms.Compose([transforms.ToTensor()])
-    data_source = torch.zeros([1, 3, input_size, input_size]).cuda()
-    data_source[0] = trans(img).cuda()
-    target_info = torch.zeros([1, 3, input_size, input_size]).cuda()
-    target_info[0] = trans(tar_img).cuda()
+    data_source = torch.zeros([1, 3, input_size, input_size]).to(device)
+    data_source[0] = trans(img).to(device)
+    target_info = torch.zeros([1, 3, input_size, input_size]).to(device)
+    target_info[0] = trans(tar_img).to(device)
     net.target_info = target_info
     net.mode = mode
     net.rate = rate
-    label = torch.zeros(data_source.shape).cuda()
+    label = torch.zeros(data_source.shape).to(device)
     print(net(data_source, components=True))
 
     # Targeted PGD attack is applied.
