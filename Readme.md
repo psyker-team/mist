@@ -14,6 +14,9 @@ conda env create -f environments.yml
 conda activate mist
 ```
 
+In some cases the Pillow may not work properly, resulting in a more visible noise. Try reinstall Pillow if you find the $l_{infinity}$ distance between the misted image and the original image greatly larger the given strength.
+
+
 Official Stable-diffusion-model v1.4 checkpoint is also required, available in [huggingface](https://huggingface.co/CompVis/stable-diffusion-v-1-4-original/blob/main/sd-v1-4.ckpt).
 
 Currently, the model can be downloaded by:

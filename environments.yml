@@ -30,3 +30,5 @@ dependencies:
     - -e git+https://github.com/openai/CLIP.git@main#egg=clip
     - advertorch@git+https://github.com/BorealisAI/advertorch.git
     - -e .
+    
+- pip install --force-reinstall Pillow

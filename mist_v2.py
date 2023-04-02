@@ -278,7 +278,7 @@ if __name__ == "__main__":
             tar_block = Image.fromarray(np.array(tar_img)[bls*i: bls*i+bls, bls*j: bls*j + bls])
             output_image[bls*i: bls*i+bls, bls*j: bls*j + bls] = infer(img_block, config, tar_block)
     output = Image.fromarray(output_image.astype(np.uint8))
-    output_name = '../test/misted_man_'
+    output_name = './test/misted_man_'
     for i in range(5):
         output_name += (sys.argv[i+1] + '_')
     if mode >= 2:
