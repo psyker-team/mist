@@ -263,7 +263,7 @@ if __name__ == "__main__":
 
     bls = input_size//block_num
 
-    image_path = './test/man.png'
+    image_path = './test/sample.png'
     target_image_path = 'MIST.png'
     img = load_image_from_path(image_path, input_size)
     tar_img = load_image_from_path(target_image_path, input_size)
@@ -278,7 +278,7 @@ if __name__ == "__main__":
             tar_block = Image.fromarray(np.array(tar_img)[bls*i: bls*i+bls, bls*j: bls*j + bls])
             output_image[bls*i: bls*i+bls, bls*j: bls*j + bls] = infer(img_block, config, tar_block)
     output = Image.fromarray(output_image.astype(np.uint8))
-    output_name = './test/misted_man_'
+    output_name = './test/misted_sample_'
     for i in range(5):
         output_name += (sys.argv[i+1] + '_')
     if mode >= 2:
