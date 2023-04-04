@@ -30,3 +30,7 @@ dependencies:
     - -e git+https://github.com/openai/CLIP.git@main#egg=clip
     - advertorch@git+https://github.com/BorealisAI/advertorch.git
     - -e .
+<<<<<<< HEAD
+=======
+
+>>>>>>> b9c5f8acd3dcb6bedb7b281f92f29b277d33698a
