@@ -1,6 +1,9 @@
 # Mist-webui-v1.0
 
-Mist is a project aims at x. See [documents](https:) for more information.
+Mist is a powerful image preprocessing tool designed for the purpose of protecting the style and content of images from being mimicked by state-of-the-art AI-for-Art applications, including Stable Diffusion, NovelAI, and scenario.gg. By adding watermarks to the images, Mist renders them unrecognizable for the models employed by AI-for-Art applications. Attempts by AI-for-Art applications to mimic these Misted images will be ineffective, and the output image of such mimicry will be scrambled and unusable as artwork. 
+
+
+Refer to the [document](https:) for more information.
 
 
 ## TODO
@@ -63,4 +66,4 @@ python utils/postprocess.py
 
 ## Validation
 
-Refer to the [documents](https:) to validate the effects of mist.
+Refer to the [validation document](https:) to validate the effects of mist.
