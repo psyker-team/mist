@@ -83,5 +83,5 @@ It is notable that Mist requires an open gradient flow of stable diffusion model
 
 ```
 models/diffusion/ddpm.py  ---->  models/diffusion/ddpmAttack.py 
-configs/stable-diffusion/vi-inference.yaml  ---->  configs/stable-diffusion/v1-inference-attack.yaml
+configs/stable-diffusion/v1-inference.yaml  ---->  configs/stable-diffusion/v1-inference-attack.yaml
 ```
