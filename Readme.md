@@ -70,3 +70,18 @@ We provide scripts to crop and resize the Misted images to evaluate the robustne
 ## Validation
 
 Refer to the [validation document](https://mist-documentation.readthedocs.io/en/latest/content/validation.html) to validate the effects of Mist.
+
+
+## License
+
+This project is licensed under the [GPL-3.0 license](https://github.com/mist-project/mist/blob/main/LICENSE). 
+
+
+Part of the code is based on the [stable-diffusion](https://github.com/CompVis/stable-diffusion). You can find the [license](https://github.com/CompVis/stable-diffusion/blob/main/LICENSE) of stable-diffusion in their repository. 
+
+It is notable that Mist requires an open gradient flow of stable diffusion model for end-to-end adversarial perturbation. Thus following files provided by stable-diffusion are modified in support of an open gradient flow:
+
+```
+models/diffusion/ddpm.py  ---->  models/diffusion/ddpmAttack.py 
+configs/stable-diffusion/vi-inference.yaml  ---->  configs/stable-diffusion/v1-inference-attack.yaml
+```
