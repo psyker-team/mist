@@ -1,6 +1,6 @@
 # Mist
 
-Mist is a powerful image preprocessing tool designed for the purpose of protecting the style and content of images from being mimicked by state-of-the-art AI-for-Art applications, including Stable Diffusion, NovelAI, and scenario.gg. By adding watermarks to the images, Mist renders them unrecognizable for the models employed by AI-for-Art applications. Attempts by AI-for-Art applications to mimic these Misted images will be ineffective, and the output image of such mimicry will be scrambled and unusable as artwork. For more details on Mist, refer to our [documentation](https://mist-documentation.readthedocs.io/en/latest) and [homepage](https://mist.github.io).
+Mist is a powerful image preprocessing tool designed for the purpose of protecting the style and content of images from being mimicked by state-of-the-art AI-for-Art applications, including Stable Diffusion, NovelAI, and scenario.gg. By adding watermarks to the images, Mist renders them unrecognizable for the models employed by AI-for-Art applications. Attempts by AI-for-Art applications to mimic these Misted images will be ineffective, and the output image of such mimicry will be scrambled and unusable as artwork. For more details on Mist, refer to our [documentation](https://mist-documentation.readthedocs.io/en/latest) and [homepage](https://mist-project.github.io/).
 
 This repository provides the complete source code of Mist. Source code can be used to build Mist-WebUI from scratch or deploy a Mist remote service on a server. 
 
