@@ -96,7 +96,7 @@ if __name__ == "__main__":
                                                   label='VRAM mode')
                     with gr.Accordion("Experimental option for non-square input", open=False):
                         no_resize = gr.CheckboxGroup(["No-resize mode"],
-                                                  info="Use this mode if you donot want your image to bre sized in square shape. This optional is still experimental and may degrade the strength of MIST",
+                                                  info="Use this mode if you donot want your image to be resized in square shape. This option is still experimental and may reduce the strength of MIST.",
                                                   label='No-resize mode')
                     inputs = [image, eps, steps, input_size, rate, mode, block_mode, no_resize]
                     image_button = gr.Button("Mist")
