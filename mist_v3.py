@@ -269,7 +269,7 @@ def infer(img: PIL.Image.Image, config, tar_img: PIL.Image.Image = None, mask: P
 
 # Test the script for Vangogh dataset with command: python mist_v3.py -inp test/vangogh --output_dir vangogh
 # For low Vram cost, test the script with command: python mist_v3.py -inp test/vangogh --output_dir vangogh --block_num 2
-# Test the new functions:  python mist_v3.py -inp test/vangogh_random_size --output_dir vangogh_random_size --non_resize
+
 if __name__ == "__main__":
     args = parse_args()
     epsilon = args.epsilon
