@@ -1,14 +1,15 @@
+
 hub/
 src/
 openai/
-test/vangogh_*
 test/man_*
-<<<<<<< HEAD
-test/man_*.png
 test/sample_*.png
-=======
+outputs/dirs/*/*.png
+outputs/dirs/*/*.jpg
+outputs/images/*.png
+outputs/images/*.jpg
+models/
 misted_*.png
->>>>>>> b9c5f8acd3dcb6bedb7b281f92f29b277d33698a
 *.bin
 *.ckpt
 *.ipynb_checkpoints*

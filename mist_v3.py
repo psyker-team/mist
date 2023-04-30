@@ -5,7 +5,6 @@ import PIL
 from PIL import Image
 from einops import rearrange
 import ssl
-import sys
 from tqdm import tqdm
 
 import torch
@@ -14,59 +13,15 @@ import torchvision.transforms as transforms
 from pytorch_lightning import seed_everything
 
 from ldm.util import instantiate_from_config
-#from advertorch.attacks import LinfPGDAttack
+
 from Masked_PGD import LinfPGDAttack
+from mist_utils import parse_args, load_mask, closing_resize, load_image_from_path
 
 
 ssl._create_default_https_context = ssl._create_unverified_context
 os.environ['TORCH_HOME'] = os.getcwd()
 os.environ['HF_HOME'] = os.path.join(os.getcwd(), 'hub/')
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
-
-
-def load_mask(mask):
-    mask = np.array(mask)[:,:,0:3]
-    for p in range(mask.shape[0]):
-        for q in range(mask.shape[1]):
-            # if np.sum(mask[p][q]) != 0:
-            #     mask[p][q] = 255
-            if mask[p][q][0] != 255:
-                mask[p][q] = 0
-            else:
-                mask[p][q] = 255
-    return mask
-
-
-def closing_resize(image_path: str, input_size: int, block_num: int = 1, no_load: bool = False) -> PIL.Image.Image:
-    if no_load:
-        im = image_path
-    else:
-        im = Image.open(image_path)
-    target_size = list(im.size)
-    resize_parameter = min(target_size[0], target_size[1])/input_size
-    block_size = 8 * block_num 
-    target_size[0] = int(target_size[0] / resize_parameter) // block_size * block_size
-    target_size[1] = int(target_size[1] / resize_parameter) // block_size * block_size
-    img = im.resize(target_size)
-    return img, target_size
-
-
-def load_image_from_path(image_path: str, input_width: int, input_height: int = 0, no_load: bool = False) -> PIL.Image.Image:
-    """
-    Load image form the path and reshape in the input size.
-    :param image_path: Path of the input image
-    :param input_size: The requested size in int.
-    :returns: An :py:class:`~PIL.Image.Image` object.
-    """
-    if input_height == 0:
-        input_height = input_width
-    if no_load:
-        im = image_path.resize((input_width, input_height),
-                                            resample=PIL.Image.BICUBIC)
-    else:
-        img = Image.open(image_path).resize((input_width, input_height),
-                                            resample=PIL.Image.BICUBIC)
-    return img
 
 
 def load_model_from_config(config, ckpt, verbose: bool = False):
@@ -131,8 +86,8 @@ class target_model(nn.Module):
     def __init__(self, model,
                  condition: str,
                  target_info: str = None,
-                 mode: int = 2, 
-                 rate: int = 10000, 
+                 mode: int = 2,
+                 rate: int = 10000,
                  input_size = 512):
         """
         :param model: A SDM model.
@@ -194,19 +149,19 @@ class target_model(nn.Module):
             return self.fn(zx, zy) - loss_semantic * self.rate
 
 
-def init(epsilon: int = 16, steps: int = 100, alpha: int = 1, 
-         input_size: int = 512, object: bool = False, seed: int =23, 
+def init(epsilon: int = 16, steps: int = 100, alpha: int = 1,
+         input_size: int = 512, object: bool = False, seed: int = 23,
          ckpt: str = None, base: str = None, mode: int = 2, rate: int = 10000):
     """
     Prepare the config and the model used for generating adversarial examples.
     :param epsilon: Strength of adversarial attack in l_{\infinity}.
-                    After the round and the clip process during adversarial attack, 
+                    After the round and the clip process during adversarial attack,
                     the final perturbation budget will be (epsilon+1)/255.
     :param steps: Iterations of the attack.
     :param alpha: strength of the attack for each step. Measured in l_{\infinity}.
     :param input_size: Size of the input image.
     :param object: Set True if the targeted images describes a specifc object instead of a style.
-    :param mode: The mode for computation of the loss. 0: semantic; 1: textural; 2: fused. 
+    :param mode: The mode for computation of the loss. 0: semantic; 1: textural; 2: fused.
                  See the document for more details about the mode.
     :param rate: The fusion weight. Higher rate refers to more emphasis on semantic loss.
     :returns: a dictionary containing model and config.
@@ -308,62 +263,104 @@ def infer(img: PIL.Image.Image, config, tar_img: PIL.Image.Image = None, mask: P
     return grid_adv
 
 
-# Test the script with command: python mist_v2_size_mask.py 16 100 512 1 2 1 1 1
-# or the command: python mist_v2_size.py 16 100 512 2 2 1, which process
-# the image blockwisely for lower VRAM cost
+# Test the script with command: python mist_v3.py -img test/sample.png --output_name misted_sample
+# For low Vram cost, test the script with command: python mist_v3.py -img test/sample.png --output_name misted_sample --block_num 2
+# Test the new functions:  python mist_v3.py -img test/sample_random_size.png --output_name misted_sample --mask --non_resize --mask_path test/processed_mask.png
 
+# Test the script for Vangogh dataset with command: python mist_v3.py -inp test/vangogh --output_dir vangogh
+# For low Vram cost, test the script with command: python mist_v3.py -inp test/vangogh --output_dir vangogh --block_num 2
+# Test the new functions:  python mist_v3.py -inp test/vangogh_random_size --output_dir vangogh_random_size --non_resize
 if __name__ == "__main__":
-    epsilon = int(sys.argv[1])
-    steps = int(sys.argv[2])
-    input_size = int(sys.argv[3])
-    block_num = int(sys.argv[4])
-    mode = int(sys.argv[5])
-    rate = 10 ** (int(sys.argv[6]) + 3)
-    mask = int(sys.argv[7])
-    resize = int(sys.argv[8])
-
-    image_path = './test/sample_random_size.png'
+    args = parse_args()
+    epsilon = args.epsilon
+    steps = args.steps
+    input_size = args.input_size
+    block_num = args.block_num
+    mode = args.mode
+    rate = 10 ** (args.rate + 3)
+    mask = args.mask
+    resize = args.non_resize
+    print(epsilon, steps, input_size, block_num, mode, rate, mask, resize)
     target_image_path = 'MIST.png'
     bls = input_size//block_num
-    if resize:
-        img, target_size = closing_resize(image_path, input_size, block_num)
-        bls_h = target_size[0]//block_num
-        bls_w = target_size[1]//block_num
-        tar_img = load_image_from_path(target_image_path, target_size[0],
-                                       target_size[1])
-    else:
-        img = load_image_from_path(image_path, input_size)
-        tar_img = load_image_from_path(target_image_path, input_size)
-        bls_h = bls_w = bls
-        target_size = [input_size, input_size]
-    output_image = np.zeros([target_size[1], target_size[0], 3])
-    config = init(epsilon=epsilon, steps=steps, mode=mode, rate=rate)
-    config['parameters']["input_size"] = bls
+    if args.input_dir_path:
+        image_dir_path = args.input_dir_path
+        config = init(epsilon=epsilon, steps=steps, mode=mode, rate=rate)
+        config['parameters']["input_size"] = bls
 
+        for img_id in os.listdir(image_dir_path):
+            image_path = os.path.join(image_dir_path, img_id)
 
-    if mask:
-        mask_path = './test/processed_mask.png'
-        processed_mask = load_image_from_path(mask_path, target_size[0], target_size[1])
-    else:
-        processed_mask = None
-    for i in tqdm(range(block_num)):
-        for j in tqdm(range(block_num)):
-            if processed_mask is not None:
-                input_mask = Image.fromarray(np.array(processed_mask)[bls_w*i: bls_w*i+bls_w, bls_h*j: bls_h*j + bls_h])
+            if resize:
+                img, target_size = closing_resize(image_path, input_size, block_num)
+                bls_h = target_size[0]//block_num
+                bls_w = target_size[1]//block_num
+                tar_img = load_image_from_path(target_image_path, target_size[0],
+                                               target_size[1])
             else:
-                input_mask = None
-            img_block = Image.fromarray(np.array(img)[bls_w*i: bls_w*i+bls_w, bls_h*j: bls_h*j + bls_h])
-            tar_block = Image.fromarray(np.array(tar_img)[bls_w*i: bls_w*i+bls_w, bls_h*j: bls_h*j + bls_h])
+                img = load_image_from_path(image_path, input_size)
+                tar_img = load_image_from_path(target_image_path, input_size)
+                bls_h = bls_w = bls
+                target_size = [input_size, input_size]
+            output_image = np.zeros([target_size[1], target_size[0], 3])
+            if mask:
+                print("Alert: Mask function is disabled when processed images in dir. Please set input_dir_path as None to enable mask.")
+            processed_mask = None
+            for i in tqdm(range(block_num)):
+                for j in tqdm(range(block_num)):
+                    if processed_mask is not None:
+                        input_mask = Image.fromarray(np.array(processed_mask)[bls_w*i: bls_w*i+bls_w, bls_h*j: bls_h*j + bls_h])
+                    else:
+                        input_mask = None
+                    img_block = Image.fromarray(np.array(img)[bls_w*i: bls_w*i+bls_w, bls_h*j: bls_h*j + bls_h])
+                    tar_block = Image.fromarray(np.array(tar_img)[bls_w*i: bls_w*i+bls_w, bls_h*j: bls_h*j + bls_h])
 
-            output_image[bls_w*i: bls_w*i+bls_w, bls_h*j: bls_h*j + bls_h] = infer(img_block, config, tar_block, input_mask)
+                    output_image[bls_w*i: bls_w*i+bls_w, bls_h*j: bls_h*j + bls_h] = infer(img_block, config, tar_block, input_mask)
+            output = Image.fromarray(output_image.astype(np.uint8))
+            output_dir = os.path.join('outputs/dirs', args.output_dir)
+            class_name = '_' + str(epsilon) + '_' + str(steps) + '_' + str(input_size) + '_' + str(block_num) + '_' + str(mode) + '_' + str(args.rate) + '_' + str(int(mask)) + '_' + str(int(resize))
+            output_path_dir = output_dir + class_name
+            if not os.path.exists(output_path_dir):
+                os.mkdir(output_path_dir)
+            output_path = os.path.join(output_path_dir, img_id)
+            print("Output image saved in path {}".format(output_path))
+            output.save(output_path)
+    else:
+        image_path = args.input_image_path
+        if resize:
+            img, target_size = closing_resize(image_path, input_size, block_num)
+            bls_h = target_size[0]//block_num
+            bls_w = target_size[1]//block_num
+            tar_img = load_image_from_path(target_image_path, target_size[0],
+                                           target_size[1])
+        else:
+            img = load_image_from_path(image_path, input_size)
+            tar_img = load_image_from_path(target_image_path, input_size)
+            bls_h = bls_w = bls
+            target_size = [input_size, input_size]
+        output_image = np.zeros([target_size[1], target_size[0], 3])
+        config = init(epsilon=epsilon, steps=steps, mode=mode, rate=rate)
+        config['parameters']["input_size"] = bls
 
-    output = Image.fromarray(output_image.astype(np.uint8))
-    output_name = './test/misted_sample_'
-    for i in range(5):
-        output_name += (sys.argv[i+1] + '_')
-    if mode >= 2:
-        output_name += (sys.argv[6] + '_')
+        if mask:
+            mask_path = args.mask_path
+            processed_mask = load_image_from_path(mask_path, target_size[0], target_size[1])
+        else:
+            processed_mask = None
+        for i in tqdm(range(block_num)):
+            for j in tqdm(range(block_num)):
+                if processed_mask is not None:
+                    input_mask = Image.fromarray(np.array(processed_mask)[bls_w*i: bls_w*i+bls_w, bls_h*j: bls_h*j + bls_h])
+                else:
+                    input_mask = None
+                img_block = Image.fromarray(np.array(img)[bls_w*i: bls_w*i+bls_w, bls_h*j: bls_h*j + bls_h])
+                tar_block = Image.fromarray(np.array(tar_img)[bls_w*i: bls_w*i+bls_w, bls_h*j: bls_h*j + bls_h])
 
-    output_name += (sys.argv[7] + '_' + sys.argv[8])
-    output_path = output_name + '.png'
-    output.save(output_path)
+                output_image[bls_w*i: bls_w*i+bls_w, bls_h*j: bls_h*j + bls_h] = infer(img_block, config, tar_block, input_mask)
+
+        output = Image.fromarray(output_image.astype(np.uint8))
+        output_name = os.path.join('outputs/images', args.output_name)
+        save_parameter = '_' + str(epsilon) + '_' + str(steps) + '_' + str(input_size) + '_' + str(block_num) + '_' + str(mode) + '_' + str(args.rate) + '_' + str(int(mask)) + '_' + str(int(resize))
+        output_name += save_parameter + '.png'
+        print("Output image saved in path {}".format(output_name))
+        output.save(output_name)
