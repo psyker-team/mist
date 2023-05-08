@@ -10,7 +10,7 @@ from PIL import Image, ImageOps
 
 def reverse_mask(mask):
     r, g, b, a = mask.split()
-    mask = PIL.Image.merge('RGB', (r,g,b))
+    mask = PIL.Image.merge('RGB', (r, g, b))
     return ImageOps.invert(mask)
 
 
@@ -50,7 +50,7 @@ def process_image(image, eps, steps, input_size, rate, mode, block_mode, no_resi
         tar_img = load_image_from_path(target_image_path, target_size[0],
                                        target_size[1])
     else:
-        img = load_image_from_path(image_path, input_size)
+        img = load_image_from_path(image, input_size, input_size, True)
         tar_img = load_image_from_path(target_image_path, input_size)
         bls_h = bls_w = bls
         target_size = [input_size, input_size]
