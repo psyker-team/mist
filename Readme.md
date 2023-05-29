@@ -1,10 +1,12 @@
 # Mist
 
+Updated: Good news! Our paper is acceped by ICML 2023 as Oral presentation. The paper can be found at [arxiv](https://arxiv.org/abs/2302.04578) currently. Mist is based upon the paper with some extensions (See our [technical report](http://arxiv.org/abs/2305.12683) for more details).
+
+
 Mist is a powerful image preprocessing tool designed for the purpose of protecting the style and content of images from being mimicked by state-of-the-art AI-for-Art applications, including Stable Diffusion, NovelAI, and scenario.gg. By adding watermarks to the images, Mist renders them unrecognizable for the models employed by AI-for-Art applications. Attempts by AI-for-Art applications to mimic these Misted images will be ineffective, and the output image of such mimicry will be scrambled and unusable as artwork. For more details on Mist, refer to our [documentation](https://mist-documentation.readthedocs.io/en/latest) and [homepage](https://mist-project.github.io/).
 
 This repository provides the complete source code of Mist. Source code can be used to build Mist-WebUI from scratch or deploy a Mist remote service on a server. 
 
- 
 
 
 ## Setup
@@ -84,4 +86,28 @@ It is notable that Mist requires an open gradient flow of stable diffusion model
 ```
 models/diffusion/ddpm.py  ---->  models/diffusion/ddpmAttack.py 
 configs/stable-diffusion/v1-inference.yaml  ---->  configs/stable-diffusion/v1-inference-attack.yaml
+```
+ 
+## Citation
+If you find our work valuable and utilize it, we kindly request that you cite our paper.
+
+```
+@misc{liang2023adversarial,
+      title={Adversarial Example Does Good: Preventing Painting Imitation from Diffusion Models via Adversarial Examples}, 
+      author={Chumeng Liang and Xiaoyu Wu and Yang Hua and Jiaru Zhang and Yiming Xue and Tao Song and Zhengui Xue and Ruhui Ma and Haibing Guan},
+      year={2023},
+      eprint={2302.04578},
+      archivePrefix={arXiv},
+      primaryClass={cs.CV}
+}
+```
+```
+@misc{liang2023mist,
+      title={Mist: Towards Improved Adversarial Examples for Diffusion Models}, 
+      author={Chumeng Liang and Xiaoyu Wu},
+      year={2023},
+      eprint={2305.12683},
+      archivePrefix={arXiv},
+      primaryClass={cs.CV}
+}
 ```
