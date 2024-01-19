@@ -92,22 +92,20 @@ configs/stable-diffusion/v1-inference.yaml  ---->  configs/stable-diffusion/v1-i
 If you find our work valuable and utilize it, we kindly request that you cite our paper.
 
 ```
-@misc{liang2023adversarial,
-      title={Adversarial Example Does Good: Preventing Painting Imitation from Diffusion Models via Adversarial Examples}, 
-      author={Chumeng Liang and Xiaoyu Wu and Yang Hua and Jiaru Zhang and Yiming Xue and Tao Song and Zhengui Xue and Ruhui Ma and Haibing Guan},
-      year={2023},
-      eprint={2302.04578},
-      archivePrefix={arXiv},
-      primaryClass={cs.CV}
+@inproceedings{liang2023adversarial,
+  title={Adversarial example does good: Preventing painting imitation from diffusion models via adversarial examples},
+  author={Liang, Chumeng and Wu, Xiaoyu and Hua, Yang and Zhang, Jiaru and Xue, Yiming and Song, Tao and Xue, Zhengui and Ma, Ruhui and Guan, Haibing},
+  booktitle={International Conference on Machine Learning},
+  pages={20763--20786},
+  year={2023},
+  organization={PMLR}
 }
 ```
 ```
-@misc{liang2023mist,
-      title={Mist: Towards Improved Adversarial Examples for Diffusion Models}, 
-      author={Chumeng Liang and Xiaoyu Wu},
-      year={2023},
-      eprint={2305.12683},
-      archivePrefix={arXiv},
-      primaryClass={cs.CV}
+@article{liang2023mist,
+  title={Mist: Towards Improved Adversarial Examples for Diffusion Models},
+  author={Liang, Chumeng and Wu, Xiaoyu},
+  journal={arXiv preprint arXiv:2305.12683},
+  year={2023}
 }
 ```
