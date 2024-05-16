@@ -291,6 +291,10 @@ if __name__ == "__main__":
         for img_id in os.listdir(image_dir_path):
             image_path = os.path.join(image_dir_path, img_id)
 
+            if os.path.splitext(image_path)[1].lower().strip('.') not in ['png', 'jpg', 'jpeg', ]:
+                print(f'skip non-image file {image_path}')
+                continue
+
             if resize:
                 img, target_size = closing_resize(image_path, input_size, block_num)
                 bls_h = target_size[0]//block_num
