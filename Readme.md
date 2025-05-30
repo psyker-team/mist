@@ -42,7 +42,7 @@ mv sd-v1-4.ckpt models/ldm/stable-diffusion-v1/model.ckpt
 | Steps           | [1, 1000]                               | The number of steps to optimize the watermark.               |
 | Output size     | {256, 512, 768}                         | The size of the output image, square only.                   |
 | Blocking Number | {1(1x1), 2 (2x2)}                       | If true, separate the image into blocks of BxB and add watermarks to these blocks, respectively. |
-| Mode            | {0 (textural), 1 (semantic), 2 (fused)} | Watermark mode. See documentation for details.               |
+| Mode            | {0 (semantic), 1 (textural), 2 (fused)} | Watermark mode. See documentation for details.               |
 | Fused weight    | [1, 5]                                  | Balance the weight of textural mode and semantic mode in fused mode. |
 
 The parameters must be provided in sequence as mentioned in the table. For example, use the following command to Mist the image with Strength 16, Steps 100, output size 512, blocking number 1, mode 2 (fused mode), and fused weight 1:
